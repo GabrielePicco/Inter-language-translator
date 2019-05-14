@@ -2,3 +2,9 @@
 PythonProject/\.idea/
 
 *.pyc
+
+Java Simple NLG Gateway/\.idea/
+
+*.class
+
+*.iml
