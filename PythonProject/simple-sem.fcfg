@@ -74,6 +74,7 @@ N[NUM=pl,SEM=<\x.objectRef(x,dog,pl)>] -> 'dogs'
 N[NUM=sg,SEM=<\x.objectRef(x,thing,sg)>] -> 'thing'
 N[NUM=pl,SEM=<\x.objectRef(x,thing,pl)>] -> 'things'
 N[NUM=sg,SEM=<\x.objectRef(x,price,sg)>] -> 'price'
+N[NUM=pl,SEM=<\x.objectRef(x,price,pl)>] -> 'prices'
 N[NUM=sg,SEM=<\x.objectRef(x,head,sg)>] -> 'head'
 N[NUM=sg,SEM=<\x.objectRef(x,opportunity,sg)>] -> 'opportunity'
 
@@ -89,6 +90,7 @@ AUX[NUM=pl,SEM=<\x.x>] -> 'are'
 AUX[NUM=sg,SEM=<\x.x>] -> 'is'
 
 GERUND[SEM=<\X x.X(\y.(clauseT(x,imagine,y) & verbTense(imagine,progPres)))>,TNS=progPres] -> 'imagining'
+GERUND[SEM=<\X x.X(\y.(clauseT(x,chase,y) & verbTense(chase,progPres)))>,TNS=progPres] -> 'chasing'
 IGERUND[SEM=<\y.(clauseT(y,fly) & verbTense(fly,progPres))>,TNS=progPres] -> 'flying'
 
 ADVT[SEM=<\p a P y.exist c.(P(c) & compl(c,out,p,a) & P(y))>] -> 'out'

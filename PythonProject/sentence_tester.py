@@ -1,8 +1,14 @@
 from traduttore_interlingua import EnglishToItalianTranslator
 
-sentences = ['you are imagining things',
+sentences = ['Angus imagines a thing',
+             'Irene is chasing a dog',
+             'you imagine things',
+             'you are imagining things',
+             'you are imagining a thing',
              'there is a price on my head',
-             'your big opportunity is flying out of here']
+             'there is a price on your head',
+             'your big opportunity is flying out of here',
+             'your dog is flying out of here']
 
 translator = EnglishToItalianTranslator()
 
