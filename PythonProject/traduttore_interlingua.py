@@ -7,6 +7,10 @@ from nltk.sem.logic import *
 
 
 class EnglishToItalianTranslator:
+    """
+    English to italian translator, convert english sentence to FOl logical formula,
+    then transform the logical formula in a simpleNLG sentence plan and generate the italian sentence
+    """
 
     def __init__(self):
         self.gateway = JavaGateway()
@@ -23,11 +27,21 @@ class EnglishToItalianTranslator:
         self.parser = load_parser('simple-sem.fcfg', trace=0)
 
     def translate_sentence(self, sentence):
+        """
+        Translate an english sentence to an italian sentence
+        :param sentence: the input english sentence
+        :return: the output italian sentence
+        """
         formula = self.translate_sentence_to_formula(sentence)
         plan = self.formula_to_sentece_plan(formula)
         return self.realiser.realiseSentence(plan)
 
     def translate_sentence_to_formula(self, sentence):
+        """
+        Translate an English sentence to a logical FOL formula
+        :param sentence: the input sentence
+        :return: the FOL formula
+        """
         read_expr = Expression.fromstring
         tree = list(self.parser.parse(sentence.split()))[0]
         # print(tree)
@@ -35,6 +49,11 @@ class EnglishToItalianTranslator:
         return str(formula)
 
     def formula_to_sentece_plan(self, formula):
+        """
+        Transfomr a valid FOL formula in a simpleNLG sentence plan
+        :param formula:
+        :return:
+        """
         formula = self.reasoner.make_inference(formula)
         formula = self.italian_reasoner.make_inference(formula)
         clause_t = "clauseT\((.+?)\)"
@@ -48,15 +67,13 @@ class EnglishToItalianTranslator:
         else:
             return self.get_exist_clause(formula)
 
-    def get_exist_clause(self, formula):
-        clause = None
-        match_exist = "exists (.+?)\."
-        exist = re.match(match_exist, formula)
-        if exist:
-            clause = self.get_ternary_clause(None, "c'è", exist.group(1), formula)
-        return clause
-
     def get_binary_clause(self, s, v, formula):
+        """
+        :param s: the subject variable name
+        :param v: the verb
+        :param formula: the logical formula
+        :return: sentence plan
+        """
         sbj = self.word_translator.translate_word(s)
         subject = self.get_object_reference(sbj, formula)
         verb = self.get_verb(v, formula)
@@ -64,6 +81,13 @@ class EnglishToItalianTranslator:
         return clause
 
     def get_ternary_clause(self, s, v, o, formula):
+        """
+        :param s: the subject variable name
+        :param v: the verb
+        :param o: the object variable name
+        :param formula: the logical formula
+        :return: sentence plan
+        """
         if s is None:
             subject = None
         else:
@@ -74,7 +98,25 @@ class EnglishToItalianTranslator:
         clause = self.italian_factory.createClause(subject, verb, obj)
         return clause
 
+    def get_exist_clause(self, formula):
+        """
+        If verb if not present, "there is" is assumed
+        :param formula: the logical formula
+        :return: the sentence plan or None if exist is not present
+        """
+        clause = None
+        match_exist = "exists (.+?)\."
+        exist = re.match(match_exist, formula)
+        if exist:
+            clause = self.get_ternary_clause(None, "c'è", exist.group(1), formula)
+        return clause
+
     def get_verb(self, v, formula):
+        """
+        :param v: the verb
+        :param formula: the logical formula
+        :return: the simpleNLG verb object
+        """
         v_t = self.word_translator.translate_word(v)
         verb = self.italian_factory.createVerbPhrase(v_t)
         verb = self.set_verb_tense(verb, v, formula)
@@ -82,6 +124,11 @@ class EnglishToItalianTranslator:
         return verb
 
     def get_object_reference(self, variable, formula):
+        """
+        :param variable: the object variable name
+        :param formula: the logical formula
+        :return: the simpleNLG object
+        """
         object_ref = "objectRef\({},(.+?)\)".format(variable)
         s = re.search(object_ref, formula)
         if s:
@@ -100,6 +147,13 @@ class EnglishToItalianTranslator:
             return self.italian_factory.createNounPhrase(self.word_translator.translate_word(variable))
 
     def set_verb_tense(self, verb, v, formula):
+        """
+        Set the tense of the verb
+        :param verb: the verb object
+        :param v: the verb constant name
+        :param formula: the logical formula
+        :return: the simpleNLG verb object
+        """
         verbe_tense = "verbTense\({},(.+?)\)".format(v)
         s = re.search(verbe_tense, formula)
         if s:
@@ -112,6 +166,13 @@ class EnglishToItalianTranslator:
 
     @staticmethod
     def set_object_specifier(obj, variable, formula):
+        """
+        Set the object specifier
+        :param obj: the simpleNLG object
+        :param variable: the variable name
+        :param formula: the logical formula
+        :return: the simpleNLG object
+        """
         only_one = "onlyOne\({}\)".format(variable)
         if re.search(only_one, formula):
             obj.setSpecifier("il")
@@ -120,6 +181,13 @@ class EnglishToItalianTranslator:
         return obj
 
     def set_object_adj(self, obj, variable, formula):
+        """
+        Set adjective of the object
+        :param obj: the simpleNLG object
+        :param variable: the variable name
+        :param formula: the logical formula
+        :return: simpleNLG object
+        """
         adj_match = "adj\((.+?),{}\)".format(variable)
         s = re.search(adj_match, formula)
         if s:
@@ -128,6 +196,13 @@ class EnglishToItalianTranslator:
         return obj
 
     def set_possessive_pron(self, obj, variable, formula):
+        """
+        Add possessive pronoun
+        :param obj: the simpleNLG object
+        :param variable: the variable name
+        :param formula: the logical formula
+        :return: simpleNLG object
+        """
         pron_match = "pronPoss\((.+?),{}\)".format(variable)
         s = re.search(pron_match, formula)
         if s:
@@ -136,6 +211,12 @@ class EnglishToItalianTranslator:
         return obj
 
     def set_verb_complement(self, verb, v, formula):
+        """
+        :param verb: the simpleNLG verb object
+        :param v: the variable name
+        :param formula: the logical formila
+        :return: the simpleNLG object
+        """
         compl_match = "verbCompl\({},(.+?)\)".format(v)
         s = re.search(compl_match, formula)
         if s:
@@ -149,11 +230,23 @@ class EnglishToItalianTranslator:
         return verb
 
     def manage_lexical_exception(self, obj):
+        """
+        Manage some expection in lexicon, Ex: fixing gender for missing word
+        :param obj:
+        :return:
+        """
         if "opportunità" in obj.getNoun().toString():
             obj.setFeature(self.features.LexicalFeature.GENDER, self.Gender.FEMININE)
         return obj
 
     def set_object_complement(self, obj, variable, formula):
+        """
+        Add complement to an object
+        :param obj: the simpleNLG object
+        :param variable: the variable name
+        :param formula: the logica formula
+        :return: simpleNLG object (with complement if present)
+        """
         compl_match = "propP\((.+?),{},(.+?)\)".format(variable)
         compl = re.search(compl_match, formula)
         if compl and compl.lastindex == 2:

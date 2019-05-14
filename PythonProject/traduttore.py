@@ -10,8 +10,17 @@ class Languages(Enum):
 
 
 class WordTanslator:
+    """
+    Simple Word translation utility
+    """
 
     def __init__(self, language_from, language_to):
+        """
+        Translate a word from a language to another
+        (currently only support some translation of english word to italian)
+        :param language_from: origin language
+        :param language_to: destination language
+        """
         self.language_from = language_from
         self.language_to = language_to
 

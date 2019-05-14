@@ -2,6 +2,9 @@ import re
 
 
 class Reasoner:
+    """
+    Simple reasoner that infers some rule from a logical FOL formula
+    """
 
     @staticmethod
     def make_inference(formula):
@@ -11,6 +14,11 @@ class Reasoner:
 
     @staticmethod
     def induce_away(formula):
+        """
+        If compl(x,out,of,here) => compl(x,away)
+        :param formula: logical formula
+        :return: logical formula
+        """
         rule_1 = "compl\((.+?),out,of,here\)"
         s = re.search(rule_1, formula)
         if s:
@@ -29,6 +37,9 @@ class Reasoner:
 
 
 class ReasonerItalian:
+    """
+    Simple reasoner for the italian language that infers some rule from a logical FOL formula
+    """
 
     @staticmethod
     def make_inference(formula):
@@ -37,6 +48,11 @@ class ReasonerItalian:
 
     @classmethod
     def induce_reward(cls, formula):
+        """
+        If propP(on,x,y) & objectRef(x,price) & objectRef(x,head) => objectRef(x,taglia)
+        :param formula: logical formula
+        :return: logical formula
+        """
         rule_on_a_b = "propP\(on,(.+?),(.+?)\)"
         rule_a_price = "objectRef\({},price,(.+?)\)"
         rule_b_head = "objectRef\({},head,(.+?)\)"
