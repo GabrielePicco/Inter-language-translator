@@ -1,7 +1,7 @@
 from enum import Enum
 import pandas as pd
 
-ENG_TO_ITA_DICTIONARY = "./eng_to_ita.csv"
+ENG_TO_ITA_DICTIONARY = "./dictionary/eng_to_ita.csv"
 
 
 class Languages(Enum):

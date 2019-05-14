@@ -26,3 +26,26 @@ class Reasoner:
         if r0_a and r0_b and r0_b.lastindex >= 2 and r0_a.lastindex >= 1 and r0_b.group(1) == r0_a.group(1):
             formula = formula.replace(r0_b.group(0), "verbCompl({},{})".format(r0_b.group(2), r0_a.group(1)))
         return formula
+
+
+class ReasonerItalian:
+
+    @staticmethod
+    def make_inference(formula):
+        formula = ReasonerItalian.induce_reward(formula)
+        return formula
+
+    @classmethod
+    def induce_reward(cls, formula):
+        rule_on_a_b = "propP\(on,(.+?),(.+?)\)"
+        rule_a_price = "objectRef\({},price,(.+?)\)"
+        rule_b_head = "objectRef\({},head,(.+?)\)"
+        r_on_a_b = re.search(rule_on_a_b, formula)
+        if r_on_a_b and r_on_a_b.lastindex == 2:
+            rule_b_head.format(r_on_a_b.group(2))
+            r_a_price = re.search(rule_a_price.format(r_on_a_b.group(1)), formula)
+            r_b_head = re.search(rule_b_head.format(r_on_a_b.group(2)), formula)
+            if r_a_price and r_b_head:
+                formula = formula.replace(r_a_price.group(0), "objectRef({},taglia,{})".format(r_on_a_b.group(1),
+                                                                                               r_a_price.group(1)))
+        return formula

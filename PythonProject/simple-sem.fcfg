@@ -15,7 +15,7 @@
 
 S[SEM = <?subj(?vp)>] -> NP[-PronEXP,NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
 S[SEM = <?subj(?vp)>] -> NP[PronEXP=you,SEM=?subj] VP[NUM=pl,SEM=?vp]
-S[SEM = <(?np(?pp))>] -> TIS NP[SEM=?np] PP[PW=?w,SEM=?pp]
+S[SEM = <(?np(?pp))>] -> TIS[NUM=?n] NP[NUM=?n,SEM=?np] PP[PW=?w,SEM=?pp]
 S[SEM = ?s] -> COMPL[SEM = ?s]
 
 NP[-PronEXP,NUM=?n,SEM=<?det(?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
@@ -39,7 +39,7 @@ COMPL[SEM=<?adv(?ps(?advt))>] -> ADVT[SEM=?advt] PS[SEM=?ps] ADV[SEM=?adv]
 
 PP[SEM=<?p(?np)>] -> P[PW=?w,SEM=?p] NP[SEM=?np]
 
-TIS -> PART AUX
+TIS[num=?n] -> PART AUX[NUM=?n]
 
 
 #############################

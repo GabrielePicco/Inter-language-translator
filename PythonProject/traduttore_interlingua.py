@@ -2,17 +2,19 @@ from nltk import load_parser
 from py4j.java_gateway import JavaGateway
 import re
 
-from reasoner import Reasoner
+from reasoner import Reasoner, ReasonerItalian
 from traduttore import WordTanslator, Languages
 
 parser = load_parser('simple-sem.fcfg', trace=0)
 from nltk.sem.logic import *
 
-#sentence = 'you are imagining things'
+# sentence = 'you are imagining things'
 
 
-# sentence = 'there is a price on my head'
-sentence = 'your big opportunity is flying out of here'
+sentence = 'there is a price on my head'
+
+
+# sentence = 'your big opportunity is flying out of here'
 
 
 class EnglishToItalianTranslator:
@@ -28,6 +30,7 @@ class EnglishToItalianTranslator:
         self.Tense = self.gateway.jvm.simplenlg.features.Tense
         self.Gender = self.gateway.jvm.simplenlg.features.Gender
         self.reasoner = Reasoner()
+        self.italian_reasoner = ReasonerItalian()
 
     def translate_sentence(self, sentence):
         formula = self.translate_sentence_to_formula(sentence)
@@ -45,26 +48,45 @@ class EnglishToItalianTranslator:
 
     def formula_to_sentece_plan(self, formula):
         formula = self.reasoner.make_inference(formula)
+        formula = self.italian_reasoner.make_inference(formula)
         clause_t = "clauseT\((.+?)\)"
         s = re.search(clause_t, formula)
-
         if s:
             clause_t = s.group(1).split(',')
             if len(clause_t) == 3:
-                sbj = self.word_translator.translate_word(clause_t[0])
-                subject = self.get_object_reference(sbj, formula)
-                verb = self.get_verbe(clause_t[1], formula)
-                obj = self.get_object_reference(clause_t[2], formula)
-                clause = self.italian_factory.createClause(subject, verb, obj)
-                return clause
+                return self.get_ternary_clause(clause_t[0], clause_t[1], clause_t[2], formula)
             if len(clause_t) == 2:
-                sbj = self.word_translator.translate_word(clause_t[0])
-                subject = self.get_object_reference(sbj, formula)
-                verb = self.get_verbe(clause_t[1], formula)
-                clause = self.italian_factory.createClause(subject, verb)
-                return clause
+                return self.get_binary_clause(clause_t[0], clause_t[1], formula)
+        else:
+            return self.get_exist_clause(formula)
 
-    def get_verbe(self, v, formula):
+    def get_exist_clause(self, formula):
+        clause = None
+        match_exist = "exists (.+?)\."
+        exist = re.match(match_exist, formula)
+        if exist:
+            clause = self.get_ternary_clause(None, "c'è", exist.group(1), formula)
+        return clause
+
+    def get_binary_clause(self, s, v, formula):
+        sbj = self.word_translator.translate_word(s)
+        subject = self.get_object_reference(sbj, formula)
+        verb = self.get_verb(v, formula)
+        clause = self.italian_factory.createClause(subject, verb)
+        return clause
+
+    def get_ternary_clause(self, s, v, o, formula):
+        if s is None:
+            subject = None
+        else:
+            sbj = self.word_translator.translate_word(s)
+            subject = self.get_object_reference(sbj, formula)
+        verb = self.get_verb(v, formula)
+        obj = self.get_object_reference(o, formula)
+        clause = self.italian_factory.createClause(subject, verb, obj)
+        return clause
+
+    def get_verb(self, v, formula):
         v_t = self.word_translator.translate_word(v)
         verb = self.italian_factory.createVerbPhrase(v_t)
         verb = self.set_verb_tense(verb, v, formula)
@@ -82,6 +104,7 @@ class EnglishToItalianTranslator:
             obj = self.manage_lexical_exception(obj)
             obj = self.set_possessive_pron(obj, variable, formula)
             obj = self.set_object_adj(obj, variable, formula)
+            obj = self.set_object_complement(obj, variable, formula)
             if object_props[1] == "pl":
                 obj.setPlural(True)
             return obj
@@ -140,6 +163,18 @@ class EnglishToItalianTranslator:
     def manage_lexical_exception(self, obj):
         if "opportunità" in obj.getNoun().toString():
             obj.setFeature(self.features.LexicalFeature.GENDER, self.Gender.FEMININE)
+        return obj
+
+    def set_object_complement(self, obj, variable, formula):
+        compl_match = "propP\((.+?),{},(.+?)\)".format(variable)
+        compl = re.search(compl_match, formula)
+        if compl and compl.lastindex == 2:
+            prop = compl.group(1)
+            variable_compl = compl.group(2)
+            obj_compl = self.get_object_reference(variable_compl, formula)
+            obj_prop_compl = self.italian_factory.createPrepositionPhrase(self.word_translator.translate_word(prop),
+                                                                          obj_compl)
+            obj.addComplement(obj_prop_compl)
         return obj
 
 

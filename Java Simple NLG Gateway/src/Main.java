@@ -1,7 +1,4 @@
-import simplenlg.features.Feature;
-import simplenlg.features.Gender;
-import simplenlg.features.LexicalFeature;
-import simplenlg.features.Tense;
+import simplenlg.features.*;
 import simplenlg.framework.*;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.lexicon.italian.ITXMLLexicon;
@@ -65,8 +62,9 @@ public class Main {
 
 
         WordElement ci = italianFactory.getLexicon().getWord("ci", LexicalCategory.ADVERB);
-        VPPhraseSpec vPhrase = italianFactory.createVerbPhrase("è");
-        //vPhrase.setFeature(Feature.PARTICLE,"ci");
+        VPPhraseSpec vPhrase = italianFactory.createVerbPhrase("essere");
+        //vPhrase.setFeature(Feature.PARTICLE,"è");
+        //vPhrase.setFeature(InternalFeature.REALISE_AUXILIARY,"ci");
         //vPhrase.addFrontModifier(ci);
 
         NPPhraseSpec price = italianFactory.createNounPhrase("taglia");
@@ -74,7 +72,7 @@ public class Main {
         //price.setFeature(LexicalFeature.GENDER, Gender.MASCULINE);
         NPPhraseSpec testa = italianFactory.createNounPhrase("testa");
         testa.setSpecifier("il");
-        PPPhraseSpec suTesta = italianFactory.createPrepositionPhrase("su", testa);
+        PPPhraseSpec suTesta = italianFactory.createPrepositionPhrase("sopra", testa);
         testa.addModifier("mia");
         price.addComplement(suTesta);
         vPhrase.setObject(price);
