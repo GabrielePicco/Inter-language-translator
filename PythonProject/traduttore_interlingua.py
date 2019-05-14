@@ -1,20 +1,9 @@
 from nltk import load_parser
 from py4j.java_gateway import JavaGateway
-import re
 
 from reasoner import Reasoner, ReasonerItalian
 from traduttore import WordTanslator, Languages
-
-parser = load_parser('simple-sem.fcfg', trace=0)
 from nltk.sem.logic import *
-
-# sentence = 'you are imagining things'
-
-
-sentence = 'there is a price on my head'
-
-
-# sentence = 'your big opportunity is flying out of here'
 
 
 class EnglishToItalianTranslator:
@@ -31,19 +20,18 @@ class EnglishToItalianTranslator:
         self.Gender = self.gateway.jvm.simplenlg.features.Gender
         self.reasoner = Reasoner()
         self.italian_reasoner = ReasonerItalian()
+        self.parser = load_parser('simple-sem.fcfg', trace=0)
 
     def translate_sentence(self, sentence):
         formula = self.translate_sentence_to_formula(sentence)
         plan = self.formula_to_sentece_plan(formula)
         return self.realiser.realiseSentence(plan)
 
-    @staticmethod
-    def translate_sentence_to_formula(sentence):
+    def translate_sentence_to_formula(self, sentence):
         read_expr = Expression.fromstring
-        tree = list(parser.parse(sentence.split()))[0]
+        tree = list(self.parser.parse(sentence.split()))[0]
         # print(tree)
         formula = read_expr(str(tree.label()['SEM'])).simplify()
-        print(formula)
         return str(formula)
 
     def formula_to_sentece_plan(self, formula):
@@ -176,7 +164,3 @@ class EnglishToItalianTranslator:
                                                                           obj_compl)
             obj.addComplement(obj_prop_compl)
         return obj
-
-
-translator = EnglishToItalianTranslator()
-print(translator.translate_sentence(sentence))
