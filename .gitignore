@@ -8,3 +8,5 @@ Java Simple NLG Gateway/\.idea/
 *.class
 
 *.iml
+
+*.xml

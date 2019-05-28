@@ -1,13 +1,3 @@
-## Natural Language Toolkit: sem3.fcfg
-##
-## Alternative simple grammar with transitive verbs and 
-## quantifiers for the book. 
-## 
-## Author: Ewan Klein <ewan@inf.ed.ac.uk>
-## URL: <http://nltk.sourceforge.net>
-## For license information, see LICENSE.TXT
-
-
 % start S
 ############################
 # Grammar Rules
@@ -16,7 +6,6 @@
 S[SEM = <?subj(?vp)>] -> NP[-PronEXP,NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
 S[SEM = <?subj(?vp)>] -> NP[PronEXP=you,SEM=?subj] VP[NUM=pl,SEM=?vp]
 S[SEM = <(?np(?pp))>] -> TIS[NUM=?n] NP[NUM=?n,SEM=?np] PP[PW=?w,SEM=?pp]
-S[SEM = ?s] -> COMPL[SEM = ?s]
 
 NP[-PronEXP,NUM=?n,SEM=<?det(?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
 NP[-PronEXP,NUM=?n,SEM=<?pos(?nom)> ] -> PronPoss[NUM=?n,SEM=?pos]  Nom[NUM=?n,SEM=?nom]
@@ -27,19 +16,21 @@ NP[-PronEXP,NUM=pl,SEM=<\Q.exists x.(?nom(x) & Q(x))>] -> Nom[NUM=pl,SEM=?nom]
 
 Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
 
-VP[NUM=?n,SEM=?v] -> IV[NUM=?n,SEM=?v]
-VP[NUM=?n,SEM=<?v(?obj)>] -> TV[NUM=?n,SEM=?v] NP[SEM=?obj]
+VP[NUM=?n,SEM=?v] -> IVP[NUM=?n,SEM=?v]
+VP[NUM=?n,SEM=<?v(?obj)>] -> TVP[NUM=?n,SEM=?v] NP[SEM=?obj]
 
-TV[NUM=?n,SEM=?g] -> AUX[NUM=?n] GERUND[SEM=?g]
-IV[NUM=?n,SEM=?g] -> AUX[NUM=?n] IGERUND[SEM=?g]
+TVP[NUM=?n,SEM=?g] -> AUX[NUM=?n] TVP[SEM=?g, TNS=progPres]
 
-IV[NUM=?n,SEM=<?cmp(?iv)>] -> IV[NUM=?n,SEM=?iv] COMPL[SEM=?cmp]
-
-COMPL[SEM=<?adv(?ps(?advt))>] -> ADVT[SEM=?advt] PS[SEM=?ps] ADV[SEM=?adv]
+COMPL[SEM=<?adv(?ps(?advl))>] -> COMPLC[SEM=?advl] PS[SEM=?ps] ADV[SEM=?adv]
 
 PP[SEM=<?p(?np)>] -> P[PW=?w,SEM=?p] NP[SEM=?np]
 
 TIS[num=?n] -> PART AUX[NUM=?n]
+
+IVP[SEM=<\y.(?v(\x.(clause(y, x) & ?vt(x))))>, TNS=?vt] -> IV[SEM=?v,TNS=?vt]
+IVP[NUM=?n, SEM=<\y.(?v(\x.(clause(y, x) & ?vt(x))))>, TNS=?vt] -> AUX[NUM=?n] IV[NUM=?n, SEM=?v,TNS=?vt, TNSS=progPres]
+
+IV[NUM=?n, SEM=<?v(?cmp)>,TNS=?vt,TNSS=?vts] -> IV[NUM=?n, SEM=?v,TNS=?vt,TNSS=?vts] COMPL[SEM=?cmp]
 
 
 #############################
@@ -73,27 +64,29 @@ N[NUM=sg,SEM=<\x.objectRef(x,dog,sg)>] -> 'dog'
 N[NUM=pl,SEM=<\x.objectRef(x,dog,pl)>] -> 'dogs'
 N[NUM=sg,SEM=<\x.objectRef(x,thing,sg)>] -> 'thing'
 N[NUM=pl,SEM=<\x.objectRef(x,thing,pl)>] -> 'things'
+N[NUM=sg,SEM=<\x.objectRef(x,apple,sg)>] -> 'apple'
 N[NUM=sg,SEM=<\x.objectRef(x,price,sg)>] -> 'price'
 N[NUM=pl,SEM=<\x.objectRef(x,price,pl)>] -> 'prices'
 N[NUM=sg,SEM=<\x.objectRef(x,head,sg)>] -> 'head'
 N[NUM=sg,SEM=<\x.objectRef(x,opportunity,sg)>] -> 'opportunity'
 
 
-TV[NUM=sg,SEM=<\X x.X(\y.(clauseT(x,chase,y) & verbTense(chase,pres)))>,TNS=pres] -> 'chases'
-TV[NUM=pl,SEM=<\X x.X(\y.(clauseT(x,chase,y) & verbTense(chase,pres)))>,TNS=pres] -> 'chase'
-TV[NUM=sg,SEM=<\X x.X(\y.(clauseT(x,imagine,y) & verbTense(imagine,pres)))>,TNS=pres] -> 'imagines'
-TV[NUM=pl,SEM=<\X x.X(\y.(clauseT(x,imagine,y) & verbTense(imagine,pres)))>,TNS=pres] -> 'imagine'
+TVP[NUM=sg,SEM=<\X x.X(\y.(clause(x,chase,y) & verbTense(chase,pres)))>,TNS=pres] -> 'chases'
+TVP[NUM=pl,SEM=<\X x.X(\y.(clause(x,chase,y) & verbTense(chase,pres)))>,TNS=pres] -> 'chase'
+TVP[NUM=sg,SEM=<\X x.X(\y.(clause(x,imagine,y) & verbTense(imagine,pres)))>,TNS=pres] -> 'imagines'
+TVP[NUM=pl,SEM=<\X x.X(\y.(clause(x,imagine,y) & verbTense(imagine,pres)))>,TNS=pres] -> 'imagine'
+TVP[SEM=<\X x.X(\y.(clause(x,imagine,y) & verbTense(imagine,progPres)))>,TNS=progPres] -> 'imagining'
+TVP[SEM=<\X x.X(\y.(clause(x,chase,y) & verbTense(chase,progPres)))>,TNS=progPres] -> 'chasing'
+
+IV[NUM=sg, SEM=<\P.(P(fly))>,TNS=<\v.verbTense(v,pres)>,TNSS=pres] -> 'fly'
+IV[SEM=<\P.(P(fly))>,TNS=<\v.verbTense(v,progPres)>,TNSS=progPres] -> 'flying'
 
 PART -> 'there'
 
 AUX[NUM=pl,SEM=<\x.x>] -> 'are'
 AUX[NUM=sg,SEM=<\x.x>] -> 'is'
 
-GERUND[SEM=<\X x.X(\y.(clauseT(x,imagine,y) & verbTense(imagine,progPres)))>,TNS=progPres] -> 'imagining'
-GERUND[SEM=<\X x.X(\y.(clauseT(x,chase,y) & verbTense(chase,progPres)))>,TNS=progPres] -> 'chasing'
-IGERUND[SEM=<\y.(clauseT(y,fly) & verbTense(fly,progPres))>,TNS=progPres] -> 'flying'
-
-ADVT[SEM=<\p a P y.exist c.(P(c) & compl(c,out,p,a) & P(y))>] -> 'out'
+COMPLC[SEM=<\p a v V.(V(v) & (exist c. (verbCompl(v,c) & compl(c,out,p,a))))>] -> 'out'
 
 PS[SEM=<\P.P(of)>] -> 'of'
 

@@ -1,14 +1,14 @@
 from nltk import load_parser
 from py4j.java_gateway import JavaGateway
 
-from reasoner import Reasoner, ReasonerItalian
+from reasoner import Reasoner
 from traduttore import WordTanslator, Languages
 from nltk.sem.logic import *
 
 
 class EnglishToItalianTranslator:
     """
-    English to italian translator, convert english sentence to FOl logical formula,
+    English to italian translator, convert english sentence to FOL logical formula,
     then transform the logical formula in a simpleNLG sentence plan and generate the italian sentence
     """
 
@@ -23,7 +23,6 @@ class EnglishToItalianTranslator:
         self.Tense = self.gateway.jvm.simplenlg.features.Tense
         self.Gender = self.gateway.jvm.simplenlg.features.Gender
         self.reasoner = Reasoner()
-        self.italian_reasoner = ReasonerItalian()
         self.parser = load_parser('simple-sem.fcfg', trace=0)
 
     def translate_sentence(self, sentence):
@@ -44,19 +43,18 @@ class EnglishToItalianTranslator:
         """
         read_expr = Expression.fromstring
         tree = list(self.parser.parse(sentence.split()))[0]
-        # print(tree)
+        print(tree)
         formula = read_expr(str(tree.label()['SEM'])).simplify()
         return str(formula)
 
     def formula_to_sentece_plan(self, formula):
         """
-        Transfomr a valid FOL formula in a simpleNLG sentence plan
+        Transform a valid FOL formula in a simpleNLG sentence plan
         :param formula:
         :return:
         """
         formula = self.reasoner.make_inference(formula)
-        formula = self.italian_reasoner.make_inference(formula)
-        clause_t = "clauseT\((.+?)\)"
+        clause_t = "clause\((.+?)\)"
         s = re.search(clause_t, formula)
         if s:
             clause_t = s.group(1).split(',')
