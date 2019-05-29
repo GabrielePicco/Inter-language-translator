@@ -7,12 +7,9 @@ sentences = ['Angus imagines a thing',
              'you are imagining a thing',
              'there is a price on my head',
              'there is a price on my apple',
-             'there is a price on your head',
              'your big opportunity is flying out of here',
-             'your big opportunity fly out of here',
-             'my dog is flying out of here']
+             'your big opportunity fly out of here']
 
-sentences = ['you imagine things']
 
 translator = EnglishToItalianTranslator()
 

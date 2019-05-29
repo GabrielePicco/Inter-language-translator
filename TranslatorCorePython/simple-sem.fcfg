@@ -70,7 +70,6 @@ N[NUM=pl,SEM=<\x.objectRef(x,price,pl)>] -> 'prices'
 N[NUM=sg,SEM=<\x.objectRef(x,head,sg)>] -> 'head'
 N[NUM=sg,SEM=<\x.objectRef(x,opportunity,sg)>] -> 'opportunity'
 
-
 TVP[NUM=sg,SEM=<\X x.X(\y.(clause(x,chase,y) & verbTense(chase,pres)))>,TNS=pres] -> 'chases'
 TVP[NUM=pl,SEM=<\X x.X(\y.(clause(x,chase,y) & verbTense(chase,pres)))>,TNS=pres] -> 'chase'
 TVP[NUM=sg,SEM=<\X x.X(\y.(clause(x,imagine,y) & verbTense(imagine,pres)))>,TNS=pres] -> 'imagines'

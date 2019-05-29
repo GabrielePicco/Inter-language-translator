@@ -1,5 +1,5 @@
 
-PythonProject/\.idea/
+TranslatorCorePython/\.idea/
 
 *.pyc
 
@@ -11,4 +11,6 @@ Java Simple NLG Gateway/\.idea/
 
 *.xml
 
-*.MF
+Java Simple NLG Gateway/src/META-INF/
+
+Java Simple NLG Gateway/out/

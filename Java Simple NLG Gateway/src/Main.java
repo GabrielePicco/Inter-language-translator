@@ -5,5 +5,8 @@ public class Main {
         Main app = new Main();
         GatewayServer server = new GatewayServer(app);
         server.start();
+        System.out.print("\n\n########################################\n" +
+                "Started the SimpleNLG Java GatewayServer" +
+                "\n########################################\n\n\n");
     }
 }
