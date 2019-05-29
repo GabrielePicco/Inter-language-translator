@@ -43,7 +43,7 @@ class EnglishToItalianTranslator:
         """
         read_expr = Expression.fromstring
         tree = list(self.parser.parse(sentence.split()))[0]
-        print(tree)
+        #print(tree)
         formula = read_expr(str(tree.label()['SEM'])).simplify()
         return str(formula)
 

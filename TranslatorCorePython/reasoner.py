@@ -28,7 +28,7 @@ class Reasoner:
     @classmethod
     def induce_reward(cls, formula):
         """
-        If propP(on,x,y) & objectRef(x,price) & objectRef(y,head) => objectRef(x,taglia)
+        If propP(on,x,y) & objectRef(x,price) & objectRef(y,head) => objectRef(x,reward)
         :param formula: logical formula
         :return: logical formula
         """

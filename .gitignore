@@ -14,3 +14,5 @@ Java Simple NLG Gateway/\.idea/
 Java Simple NLG Gateway/src/META-INF/
 
 Java Simple NLG Gateway/out/
+
+*.pages

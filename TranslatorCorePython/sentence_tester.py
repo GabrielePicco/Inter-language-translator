@@ -8,4 +8,4 @@ translator = EnglishToItalianTranslator()
 for s in sentences:
     formula = translator.translate_sentence_to_formula(s)
     translation = translator.translate_sentence(s)
-    print("\n\nFrase Input: {}\nFormula: {}\nTraduzione: {}".format(s, formula, translation))
+    print("\n\nFrase Input: {}\nFormula: {}\nTraduzione: {}".format(s.strip(), formula, translation))

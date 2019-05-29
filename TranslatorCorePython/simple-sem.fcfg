@@ -6,6 +6,7 @@
 S[SEM = <?subj(?vp)>] -> NP[-PronEXP,NUM=?n,SEM=?subj] VP[NUM=?n,SEM=?vp]
 S[SEM = <?subj(?vp)>] -> NP[PronEXP=you,SEM=?subj] VP[NUM=pl,SEM=?vp]
 S[SEM = <(?np(?pp))>] -> TIS[NUM=?n] NP[NUM=?n,SEM=?np] PP[PW=?w,SEM=?pp]
+S[SEM = <?np(\x.x)>] -> TIS[NUM=?n] NP[NUM=?n,SEM=?np]
 
 NP[-PronEXP,NUM=?n,SEM=<?det(?nom)> ] -> Det[NUM=?n,SEM=?det]  Nom[NUM=?n,SEM=?nom]
 NP[-PronEXP,NUM=?n,SEM=<?pos(?nom)> ] -> PronPoss[NUM=?n,SEM=?pos]  Nom[NUM=?n,SEM=?nom]
@@ -19,13 +20,13 @@ Nom[NUM=?n,SEM=?nom] -> N[NUM=?n,SEM=?nom]
 VP[NUM=?n,SEM=?v] -> IVP[NUM=?n,SEM=?v]
 VP[NUM=?n,SEM=<?v(?obj)>] -> TVP[NUM=?n,SEM=?v] NP[SEM=?obj]
 
-TVP[NUM=?n,SEM=?g] -> AUX[NUM=?n] TVP[SEM=?g, TNS=progPres]
+TVP[NUM=?n,SEM=?g] -> AUX[NUM=?n] TVP[-NUM, SEM=?g, TNS=progPres]
 
 COMPL[SEM=<?adv(?ps(?advl))>] -> COMPLC[SEM=?advl] PS[SEM=?ps] ADV[SEM=?adv]
 
 PP[SEM=<?p(?np)>] -> P[PW=?w,SEM=?p] NP[SEM=?np]
 
-TIS[num=?n] -> PART AUX[NUM=?n]
+TIS[NUM=?n] -> PART AUX[NUM=?n]
 
 IVP[SEM=<\y.(?v(\x.(clause(y, x) & ?vt(x))))>, TNS=?vt] -> IV[SEM=?v,TNS=?vt]
 IVP[NUM=?n, SEM=<\y.(?v(\x.(clause(y, x) & ?vt(x))))>, TNS=?vt] -> AUX[NUM=?n] IV[NUM=?n, SEM=?v,TNS=?vt, TNSS=progPres]
@@ -44,9 +45,8 @@ PropN[-PronEXP,-LOC,NUM=sg,SEM=<\P.P(irene)>] -> 'Irene'
 PronPers[PronEXP=you,NUM=sg,SEM=<\P.P(you)>] -> 'you'
 PronPers[-PronEXP,NUM=sg,SEM=<\P.P(you)>] -> 'he'
 
-Det[NUM=sg,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'every'
+Det[NUM=pl,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'every'
 Det[NUM=pl,SEM=<\P Q.all x.(P(x) -> Q(x))>] -> 'all'
-Det[SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'some'
 Det[NUM=sg,SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'a'
 Det[NUM=sg,SEM=<\P Q.exists x.(P(x) & Q(x))>] -> 'an'
 
