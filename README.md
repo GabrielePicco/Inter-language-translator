@@ -6,7 +6,7 @@
 
 Start the simpleNLG Gateway server:
 
-    java -jar Java\ Simple\ NLG\ Gateway/SimpleNLG-GatewayServer.jar
+    java -jar JavaSimpleNLGGateway/SimpleNLG-GatewayServer.jar
 
 Install the python requirements and run the test script:
 
