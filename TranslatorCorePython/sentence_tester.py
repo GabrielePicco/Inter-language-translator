@@ -1,15 +1,7 @@
 from traduttore_interlingua import EnglishToItalianTranslator
 
-sentences = ['Angus imagines a thing',
-             'Irene is chasing a dog',
-             'you imagine things',
-             'you are imagining things',
-             'you are imagining a thing',
-             'there is a price on my head',
-             'there is a price on my apple',
-             'your big opportunity is flying out of here',
-             'your big opportunity fly out of here']
-
+with open("test_sentences.txt") as f:
+    sentences = f.readlines()
 
 translator = EnglishToItalianTranslator()
 
